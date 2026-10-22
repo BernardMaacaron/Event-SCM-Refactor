@@ -9,38 +9,37 @@ Event cameras capture changes in brightness asynchronously with high temporal re
 Key points of the approach include:
 - **Persistent Representation:** ESCM maintains and updates spatial information over time via recurrent connections.
 - **Neuronal Dynamics:** The model utilizes Leaky Integrate-and-Fire (LIF) neurons with both excitatory autapses and inhibitory synapses defined over a linking field.
-- **Practical Implementation:** The code offers both a Jupyter Notebook (`ESCM_W.ipynb`) and a Python script (`ESCM.py`) that can be executed directly.
+- **Practical Implementation:** The code offers both a Jupyter Notebook (`ESCM_W.ipynb`) and a Python script (`ESCM_W.py`) that can be executed directly.
 
 Feel free to contact me via email (bernard.maacaron@iit.it) for any questions or suggestions regarding the implementation or the underlying model.
 
 ## Repository Contents
 
 - **ESCM_W.ipynb:** Jupyter Notebook implementation for interactive exploration and simulation.
-- **ESCM.py:** Standalone Python script equivalent of the notebook.
+- **ESCM_W.py:** Standalone Python script equivalent of the notebook.
 - **Persistent Representation of Event Camera Output Using Spiking Neural Networks.pdf:** The attached paper detailing the model architecture, experiments, and results.
 
 ## Installation
 
-Before running the code, ensure that you have Python 3.7 or later installed. I recommend using [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/) for managing virtual environments.
+The refactored Python package requires Python 3.12 or later. Install uv and configure virtualenvwrapper before following these steps. I recommend using [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/) for managing virtual environments.
 To set up the environment:
 
 ```bash
 # Clone the repository
-git clone https://github.com/BernardMaacaron/Event-SCM
-cd Event-SCM
+git clone https://github.com/BernardMaacaron/Event-SCM-Refactor.git
+cd Event-SCM-Refactor
 
-# Create a virtual environment with virtualenvwrapper (replace "event-scm" with your preferred env name)
-mkvirtualenv event-scm
+# Create and activate a named environment (virtualenvwrapper already configured)
+mkvirtualenv -p python3.12 event-scm
 
-# Install required packages; if a requirements.txt exists, run:
-pip install -r requirements.txt
+# Install the refactored Python package and its test dependency
+uv pip install -e '.[dev]'
+
+# In a later shell session:
+workon event-scm
 ```
 
-If no requirements file is provided for any reason, ensure you at least have installed the following packages:
-- [Brian2](https://brian2.readthedocs.io)
-- NumPy (not recommended - Brian2 provides its own set of NumPy functions adapted to work with the unit system of Brian2)
-- Matplotlib
-- Jupyter Notebook (if using the notebook)
+The package dependencies live in `pyproject.toml`. The legacy Brian2 simulations are not yet packaged; their historical environment is documented in `requirements_IIT.txt` and may require additional dependencies. `pip install -e '.[dev]'` is an alternative to the `uv pip install` command above. `uv pip` installs into the active virtualenvwrapper environment; do not run `uv sync` unless intentionally switching to a uv-managed project environment.
 
 ## Usage
 
@@ -56,22 +55,23 @@ There are two ways to run the simulations:
 2. **Using the Python Script:**
    - Run the Python script directly:
      ```bash
-     python ESCM.py
+     python ESCM_W.py
      ```
    - The script will execute the same simulation logic as the notebook, generating the outputs based on the implemented ESCM dynamics.
 
 ## Camera-event loader
 
-The first refactored block is `event_input.py`. It loads one YARP recording
+The first refactored block is `src/escm/event_input.py`. It loads one YARP recording
 directory and selects an explicit DVS channel, independently of Brian. The
 existing simulations still use their original loading code.
 
-Install its dependencies with `python -m pip install -r requirements-input.txt`.
+Install it with `uv pip install -e '.[dev]'` from the repository root.
+`requirements-input.txt` is retained as the initial decoder dependency record.
 The decoder is pinned because timestamp-clock defaults differ between bimvee
 versions. Supply the recording's decoded timestamp tick duration explicitly:
 
 ```python
-from event_input import load_events
+from escm.event_input import load_events
 
 recording = load_events(recording_directory, channel="left", width=346, height=260,
                         timestamp_clock_ns=timestamp_tick_ns)
