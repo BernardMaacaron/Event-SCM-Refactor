@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from event_input import load_events
+from escm.event_input import load_events
 
 
 class EventInputTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class EventInputTests(unittest.TestCase):
         self.recording = {"data": {"right": {"dvs": self.events}},
                           "info": {"tsOffsetFromInfo": 123.0}}
         self.args = {"channel": "right", "width": 3, "height": 2, "timestamp_clock_ns": 1000}
-        importer = patch("event_input.importIitYarp", return_value=self.recording)
+        importer = patch("escm.event_input.importIitYarp", return_value=self.recording)
         self.decode = importer.start()
         self.addCleanup(importer.stop)
 

@@ -14,3 +14,15 @@ quantitative*
 Meshed Videos
 scores
 *.pdf
+
+# Python packaging and environments
+.venv/
+venv/
+.env
+*.py[cod]
+__pycache__/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
