@@ -11,6 +11,7 @@ requires-python = ">=3.12"
 dependencies = [
     "bimvee==2.0.0",
     "numpy",
+    "brian2",
 ]
 
 [project.optional-dependencies]
