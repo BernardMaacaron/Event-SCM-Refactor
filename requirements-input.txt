@@ -1,0 +1,3 @@
+# Decoder version whose clock and timestamp-zeroing behavior event_input.py uses.
+bimvee==2.0.0
+numpy

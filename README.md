@@ -60,6 +60,51 @@ There are two ways to run the simulations:
      ```
    - The script will execute the same simulation logic as the notebook, generating the outputs based on the implemented ESCM dynamics.
 
+## Camera-event loader
+
+The first refactored block is `event_input.py`. It loads one YARP recording
+directory and selects an explicit DVS channel, independently of Brian. The
+existing simulations still use their original loading code.
+
+Install its dependencies with `python -m pip install -r requirements-input.txt`.
+The decoder is pinned because timestamp-clock defaults differ between bimvee
+versions. Supply the recording's decoded timestamp tick duration explicitly:
+
+```python
+from event_input import load_events
+
+recording = load_events(recording_directory, channel="left", width=346, height=260,
+                        timestamp_clock_ns=timestamp_tick_ns)
+events = recording["events"]
+ts, x, y, pol = (events[key] for key in ("ts", "x", "y", "pol"))
+```
+
+`recording_directory` must identify one recording, rather than a dataset root
+containing several recordings. `timestamp_tick_ns` is the timestamp encoding's
+tick duration, **not the simulation timestep**. For logs with event timestamps,
+use their actual tick duration. For logs without event timestamps, bimvee derives
+microsecond ticks from bottle timestamps, requiring `timestamp_tick_ns = 1000`.
+Sensor dimensions must be supplied; they are not inferred from active pixels.
+
+Returned timestamps are in seconds, unwrapped by bimvee, with zeroing disabled.
+The loader preserves decoded event order, repeated events, both polarities,
+and event metadata such as `tsOffset` when present. Importer metadata, including
+`tsOffsetFromInfo` when available, remains in `recording["info"]`. These timestamps
+are not necessarily absolute wall-clock times. The return value also records
+`width`, `height`, `channel`, `source`, `timestamp_unit`, and `timestamp_clock_ns`.
+
+Invalid array shapes, timestamps, coordinates, or polarity values raise errors.
+The loader does not sort, filter, deduplicate, rescale time, or generate Brian
+spikes. It preserves what bimvee decodes; bimvee's format detection, timestamp
+unwrapping, and handling of malformed packets remain decoder responsibilities.
+
+Loader contract tests use mocked decoded arrays and do not establish decoder
+compatibility with a recording. Run them from the repository root with:
+
+```bash
+python -m unittest discover -s tests -p 'test_event_input.py'
+```
+
 ## Experiments and Results
 
 The implementation is designed to replicate key experimental results from the attached paper. In brief:
