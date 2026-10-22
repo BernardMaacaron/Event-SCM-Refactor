@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "event-scm"
+version = "0.1.0"
+description = "Event-driven Spiking Cortical Model (ESCM)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bimvee==2.0.0",
+    "numpy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/escm"]
