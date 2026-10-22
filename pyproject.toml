@@ -12,6 +12,9 @@ dependencies = [
     "bimvee==2.0.0",
     "numpy",
     "brian2",
+    "imageio",
+    "imageio-ffmpeg",
+    "pillow",
 ]
 
 [project.optional-dependencies]
