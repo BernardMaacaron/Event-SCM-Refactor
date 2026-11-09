@@ -19,6 +19,11 @@ Feel free to contact me via email (bernard.maacaron@iit.it) for any questions or
 - **ESCM_W.py:** Standalone Python script equivalent of the notebook.
 - **Persistent Representation of Event Camera Output Using Spiking Neural Networks.pdf:** The attached paper detailing the model architecture, experiments, and results.
 
+
+## Research notebooks (curated)
+
+Start with the [research notebook guide](research/index.md), which organizes the 31 numbered experiments into eight provenance-labelled entry-point notebooks. The original `notebooks/` series is preserved unchanged, including unsuccessful mechanisms and independent numerical checks. This is a source-preserving first-stage curation: the notebooks have not been scientifically merged or re-executed as part of the reorganization.
+
 ## Installation
 
 The refactored Python package requires Python 3.12 or later. Install uv and configure virtualenvwrapper before following these steps. I recommend using [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/) for managing virtual environments.
